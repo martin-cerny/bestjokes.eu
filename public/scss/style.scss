@@ -1,0 +1,155 @@
+/* 
+    Created on : 25.10.2014, 13:35:09
+    Author     : Black
+*/
+
+$nav-height: 60px;
+
+
+//colors
+$color-nav: #fff;
+$color-background: #F5F5F5;
+$color-twitter: #2DA7ED;
+$color-facebook: #405C97;
+$color-share: #444444;
+$color-plus: #1E8430;
+$color-minus: #CB3A3A;
+$color-main: #eb4737;
+$color-second: #444349;
+
+nav {
+    .navbar {
+        min-height: $nav-height;
+        background-color: $color-nav;
+        border-bottom: 1px solid #ececec;
+        margin-bottom: 0px;
+        @media (min-width: 768px){
+            .navbar-nav{
+                float:none;
+                margin: 0 auto;
+                display: table;
+                table-layout: fixed;
+            }
+        }
+        ul {
+            text-transform: uppercase;
+            li { 
+                padding: 0 10px;
+                height: $nav-height;
+                font-weight: 700;
+                
+            }
+        }
+    }
+}
+
+.navbar-nav li.active, .navbar-default .navbar-nav>.active>a {
+    background-color: $color-main;
+    color: #fff;
+    &:hover {
+        color: #fff;
+        background-color: $color-main;
+    }
+}
+
+.navbar-default .navbar-nav li a {
+    &:hover {
+        color: $color-main;
+    }
+    line-height: 30px;
+}
+
+h1 {
+    margin: 0 0 20px 0;
+    text-align: center;
+    font-size: 42px;
+    text-transform: uppercase;
+    a {
+        color: black;
+        &:hover {
+            color: $color-main;
+            text-decoration: none;
+        }
+    }
+}
+.about-us {
+    p {
+        color: rgb(144, 144, 144);
+    }
+}
+section {
+    background-color: $color-background;
+    p {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 20px;
+        line-height: 42px;
+    }
+}
+.jokes {
+    min-height: 1000px;
+    h1 {
+        font-size: 30px;
+        margin: 0;
+        text-transform: capitalize;
+    }
+    .joke {
+        background-color: white;
+        padding: 10px 35px 20px 35px;
+        margin-bottom: 20px;
+        .joke-text {
+            white-space: pre-line;
+        }
+    }
+}
+
+.color-twitter {
+    color: $color-twitter;
+}
+.color-facebook {
+    color: $color-facebook;
+}
+.color-share {
+    color: $color-share;
+}
+.color-plus {
+    color: $color-plus;
+}
+.color-minus {
+    color: $color-minus;
+}
+
+.social {
+    background-color: $color-main;
+    i {
+        display: block;
+        height: 40px;
+        width: 50px;
+        margin: 30px auto 30px auto;
+        opacity: 0.75;
+        color: white;
+    }
+}
+
+footer {
+    min-height: 60px;
+    background-color: #444349;
+    color: #fff;
+    .copyright {
+        margin: 15px auto;
+        font-size: 20px;
+    }
+}
+
+.top-buffer { margin-top: 10px; }
+
+.pagination>.active>span, .pagination>.active>span:hover, .pagination>.active>span:focus {
+    background-color: $color-second;
+    border-color: $color-second;
+}
+.pagination>li>a {
+    color: $color-second;
+    &:hover {
+        color: $color-main;
+    }
+}
