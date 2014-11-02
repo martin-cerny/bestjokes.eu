@@ -16,7 +16,7 @@ Route::get('/joke/{id}', 'JokeController@getJoke');
 Route::GET('/addJoke', 'JokeController@addJoke');
 Route::POST('/addJoke', 'JokeController@insertJoke');
 Route::post('/addVote', 'JokeController@addVote');
-Route::get('/{category}/{page?}', 'JokeController@getCategory')->where('category', '[A-Z-a-z]+');
+Route::get('/{category}/{page?}',  array('as' => 'category', 'uses' => 'JokeController@getCategory'))->where('category', '[A-Z-a-z]+');
 Route::get('/{page?}', 'JokeController@getIndex');
 
 

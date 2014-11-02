@@ -25,18 +25,20 @@
                     </button>
                 </div>
                 <div class="navbar-collapse collapse text-center">
+                    <div class="row">
+                    <div class="col-lg-12">
                     <ul class="nav navbar-nav">
-                        <li <?php echo isset($categoryTitle) ? '' : 'class="active"' ?>><a href="../">All</a></li>
+                        <li <?php echo isset($categoryTitle) ? '' : 'class="active"' ?>>{{ HTML::link("/", "All") }}</li>
                         @foreach ($categories as $category)
                             @if ($category->main == 1)
-                                <li <?php if (isset($categoryTitle) && $categoryTitle == $category->name) {echo('class=active');} ?>
-                                    ><a href="./<?php echo str_replace(' ', '-', utf8_encode($category->name)); ?>-jokes">
-                                        <?php echo utf8_encode(ucwords($category->name)); ?>
-                                    </a>
+                                <li <?php if (isset($categoryTitle) && $categoryTitle == $category->name) {echo('class=active');} ?>>
+                                    <?php $name = str_replace(' ', '-', utf8_encode($category->name)) . "-jokes"; ?>
+                                    {{ HTML::linkRoute('category', utf8_encode(ucwords($category->name)), array('category' => $name)) }}
                                 </li>
                             @endif
                         @endforeach
-                    </ul>
+                    </ul></div>
+                </div>
                 </div>
             </div>
         </nav>
@@ -76,9 +78,8 @@
                     <div class="col-md-12 top-buffer">
                         @foreach ($categories as $category)
                         <div class="col-xs-4 col-sm-2 col-md-2 text-center">
-                            <a href="../<?php echo str_replace(' ', '-', utf8_encode($category->name)); ?>-jokes" style="color: white; opacity: 0.75">
-                                <?php echo utf8_encode(ucwords($category->name)); ?>
-                            </a>
+                            <?php $name = str_replace(' ', '-', utf8_encode($category->name)) . "-jokes"; ?>
+                            {{ HTML::linkRoute('category', utf8_encode(ucwords($category->name)), array('category' => $name), array('style' => 'color: white; opacity: 0.75')) }}
                         </div>
                         @endforeach
                     </div>
