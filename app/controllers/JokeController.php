@@ -13,7 +13,7 @@ class JokeController extends BaseController {
     }
 
     public function getCategory($category, $page = 0) {
-        $categoryTitle = str_replace('-jokes', '', $category);
+        $categoryTitle = str_replace('-', ' ', str_replace('-jokes', '', $category));
         $categories = $this->getCategories();
         
         $data = $this->getByPage($page, $categoryTitle);
