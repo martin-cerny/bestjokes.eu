@@ -102,7 +102,10 @@ section {
     h1 {
         font-size: 30px;
         margin: 0;
-        text-transform: capitalize;
+        text-transform: none;
+        &:first-letter {
+            text-transform: uppercase;
+        }
     }
     .joke {
         background-color: white;
@@ -153,6 +156,7 @@ footer {
 }
 
 .top-buffer { margin-top: 10px; }
+.bottom-buffer { margin-bottom: 10px; }
 
 .pagination>.active>span, .pagination>.active>span:hover, .pagination>.active>span:focus {
     background-color: $color-second;
@@ -162,5 +166,13 @@ footer {
     color: $color-second;
     &:hover {
         color: $color-main;
+    }
+}
+
+a.talmer {
+    color: #909090;
+    font-size: 16px;
+    &:focus{
+        text-decoration: none;
     }
 }
