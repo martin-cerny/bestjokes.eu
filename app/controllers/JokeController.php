@@ -34,7 +34,7 @@ class JokeController extends BaseController {
      * @return array
      */
     private function getCategories() {
-        return DB::select("SELECT name, id, main FROM category");
+        return DB::select("SELECT name, id, main FROM category ORDER BY name");
     }
 
     /**
@@ -58,10 +58,10 @@ class JokeController extends BaseController {
         $totalItems = 0;
 
         if ($category != '') {
-            $results->items = DB::select("SELECT joke.*, GROUP_CONCAT(category.name) as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id WHERE category.name = '$category' GROUP BY joke.id LIMIT 10 OFFSET $start");
+            $results->items = DB::select("SELECT joke.*, GROUP_CONCAT(category.name) as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id WHERE category.name = '$category' GROUP BY joke.id ORDER BY plus_votes - minus_votes DESC LIMIT 10 OFFSET $start");
             $totalItems = DB::select("SELECT COUNT(*) as count FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id WHERE category.name = '$category'");
         } else {
-            $results->items = DB::select("SELECT joke.*, GROUP_CONCAT(category.name) as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id GROUP BY joke.id LIMIT 10 OFFSET $start");
+            $results->items = DB::select("SELECT joke.*, GROUP_CONCAT(category.name) as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id GROUP BY joke.id ORDER BY plus_votes - minus_votes DESC LIMIT 10 OFFSET $start");
             $totalItems = DB::select("SELECT COUNT(*) as count FROM joke");
         }
         $results->totalItems = $totalItems[0]->count;
@@ -84,14 +84,20 @@ class JokeController extends BaseController {
             return View::make('joke.add', array('categories' => $categoriesAll, 'message' => "You should fill all inputs.", 'type' => "danger", "title" => $title, "text" => $text));
         }
         
-        $similarJokes = DB::select("SELECT * FROM joke");
-        foreach ($similarJokes as $similarJoke) { 
-            similar_text(strtoupper($text), strtoupper($similarJoke->text), $similarity_pst); 
-            if (number_format($similarity_pst, 0) > 70){ 
-                $message = "<strong>The text you entered is too similar to joke:</strong> $similarJoke->text"; 
+        $jokes = DB::select("SELECT * FROM joke");
+        foreach ($jokes as $joke) { 
+            similar_text(strtoupper($text), strtoupper($joke->text), $similarity_text);
+            similar_text(strtoupper($title), strtoupper($joke->title), $similarity_title);
+            if (number_format($similarity_text, 0) > 70){ 
+                $message = "<strong>The text you entered is too similar to joke:</strong> $joke->text"; 
+            } else if (number_format($similarity_title, 0) > 90) {
+                $message = "<strong>The title you entered is too similar to title:</strong> $joke->title"; 
+            }
+            if(isset($message)) {
                 return View::make('joke.add', array('categories' => $categoriesAll, 'message' => $message, 'type' => "danger", "title" => $title, "text" => $text));
-            } 
-        } 
+            }
+        }
+ 
         $text = DB::connection()->getPdo()->quote($text);
         $title = DB::connection()->getPdo()->quote($title);
         DB::insert("INSERT INTO joke (text, title) VALUES ($text, $title)");
@@ -103,11 +109,38 @@ class JokeController extends BaseController {
         return View::make('joke.add', array('categories' => $categoriesAll, 'message' => "successfull",  'type' => "success"));
     }
     
+    private function isTitleDuplicit($title) {
+        $jokes = DB::select("SELECT * FROM joke");
+        foreach ($jokes as $joke) { 
+            similar_text(strtoupper($title), strtoupper($joke->title), $similarity_title);
+            if (number_format($similarity_title, 0) > 90) {
+                return true;
+            }
+        }
+        return false;    
+    }
     
-    /**
-     * 
-     * @return type
-     */
+    private function isTextDuplicit($text) {
+        $jokes = DB::select("SELECT * FROM joke");
+        foreach ($jokes as $joke) { 
+            similar_text(strtoupper($text), strtoupper($joke->text), $similarity_text);
+            if (number_format($similarity_text, 0) > 70){ 
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function checkTitleDuplicity() {
+        $title = Input::get('title');
+        return json_encode($this->isTitleDuplicit($title));
+    }
+        
+    public function checkTextDuplicity() {
+        $text = Input::get('text');
+        return json_encode($this->isTextDuplicit($text));
+    }
+
     public function addVote() {
         $return = array();
         $return['type'] = Input::get('type');
