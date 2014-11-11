@@ -25,20 +25,19 @@
                     </button>
                 </div>
                 <div class="navbar-collapse collapse text-center">
-                    <div class="row">
                     <div class="col-lg-12">
-                    <ul class="nav navbar-nav">
-                        <li <?php echo isset($categoryTitle) ? '' : 'class="active"' ?>>{{ HTML::link("/", "All") }}</li>
-                        @foreach ($categories as $category)
-                            @if ($category->main == 1)
-                                <li <?php if (isset($categoryTitle) && $categoryTitle == $category->name) {echo('class=active');} ?>>
-                                    <?php $name = str_replace(' ', '-', utf8_encode($category->name)) . "-jokes"; ?>
-                                    {{ HTML::linkRoute('category', utf8_encode(ucwords($category->name)), array('category' => $name)) }}
-                                </li>
-                            @endif
-                        @endforeach
-                    </ul></div>
-                </div>
+                        <ul class="nav navbar-nav">
+                            <li <?php echo isset($categoryTitle) ? '' : 'class="active"' ?>>{{ HTML::link("/", "All") }}</li>
+                            @foreach ($categories as $category)
+                                @if ($category->main == 1)
+                                    <li <?php if (isset($categoryTitle) && $categoryTitle == $category->name) {echo('class=active');} ?>>
+                                        <?php $name = str_replace(' ', '-', utf8_encode($category->name)) . "-jokes"; ?>
+                                        {{ HTML::linkRoute('category', utf8_encode(ucwords($category->name)), array('category' => $name)) }}
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>

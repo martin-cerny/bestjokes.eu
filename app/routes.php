@@ -12,11 +12,13 @@
 */
 Route::pattern('page', '[0-9]+');
 
-Route::get('/joke/{id}', 'JokeController@getJoke');
+Route::GET('/joke/{id}', 'JokeController@getJoke');
 Route::GET('/addJoke', 'JokeController@addJoke');
 Route::POST('/addJoke', 'JokeController@insertJoke');
-Route::post('/addVote', 'JokeController@addVote');
-Route::get('/{category}/{page?}',  array('as' => 'category', 'uses' => 'JokeController@getCategory'))->where('category', '[A-Z-a-z]+');
-Route::get('/{page?}', 'JokeController@getIndex');
+Route::GET('/checkTitleDuplicity', 'JokeController@checkTitleDuplicity');
+Route::GET('/checkTextDuplicity', 'JokeController@checkTextDuplicity');
+Route::POST('/addVote', 'JokeController@addVote');
+Route::GET('/{category}/{page?}',  array('as' => 'category', 'uses' => 'JokeController@getCategory'))->where('category', '[A-Z-a-z]+');
+Route::GET('/{page?}', 'JokeController@getIndex');
 
 

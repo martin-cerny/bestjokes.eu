@@ -1,6 +1,6 @@
 <article class="joke col-md-8 col-md-offset-2" itemscope="" itemtype="http://schema.org/Article">
     <div class="row">
-        <h1 class="col-md-12 text-left"><a href="joke/<?php echo $joke->id ?>"><?php echo ucfirst(utf8_encode($joke->title)); ?></a></h1>
+        <h1 class="col-md-12 text-left"><a href="joke/<?php echo $joke->id ?>"><?php echo $joke->title; ?></a></h1>
         <div class="joke-tag col-md-12">
             <i class="fa fa-tag top-buffer">   
                 <?php
@@ -13,11 +13,8 @@
                         $next = true;
                     }
                     ?>
-                    <a href="./<?php echo str_replace(' ', '-', utf8_encode($jokeCategory)); ?>-jokes">
-                        <strong>
-                    <?php echo($jokeCategory); ?>
-                        </strong>
-                    </a>
+                    <?php $name = str_replace(' ', '-', utf8_encode($jokeCategory)) . "-jokes"; ?>
+                    {{ HTML::linkRoute('category', utf8_encode($jokeCategory), array('category' => $name)) }}
                 <?php } ?>
             </i>
         </div>
