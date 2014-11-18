@@ -11,10 +11,13 @@
 |
 */
 Route::pattern('page', '[0-9]+');
+Route::pattern('id', '[0-9]+');
 
-Route::GET('/joke/{id}', 'JokeController@getJoke');
+Route::GET('/joke/{id}', array('as' => 'joke', 'uses' => 'JokeController@getJoke'));
 Route::GET('/addJoke', 'JokeController@addJoke');
 Route::POST('/addJoke', 'JokeController@insertJoke');
+Route::GET('/edit/{id}', 'JokeController@editJoke');
+Route::POST('/editt/{id}', 'JokeController@updateJoke');
 Route::GET('/checkTitleDuplicity', 'JokeController@checkTitleDuplicity');
 Route::GET('/checkTextDuplicity', 'JokeController@checkTextDuplicity');
 Route::POST('/addVote', 'JokeController@addVote');
