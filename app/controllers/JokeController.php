@@ -24,7 +24,7 @@ class JokeController extends BaseController {
     }
     
     public function getJoke($id) {
-        $joke = DB::select("SELECT *, GROUP_CONCAT(category.name) as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id WHERE joke.id = '$id'");
+        $joke = DB::select("SELECT joke.*, GROUP_CONCAT(category.name) as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id WHERE joke.id = '$id'");
         $categories = $this->getCategories();
         return View::make('joke.index', array('joke' => $joke[0], 'categories' => $categories));
     }
@@ -70,21 +70,25 @@ class JokeController extends BaseController {
     }
     
     public function addJoke() {
-        $categories = $this->getCategories();
-        return View::make('joke.add', array('categories' => $categories));
+        return View::make('joke.add');
+    }
+    
+    public function editJoke($id) {
+        $joke = DB::select("SELECT joke.*, category.name as categories FROM joke JOIN jokecategory ON joke.id = jokecategory.joke_id JOIN category ON jokecategory.category_id = category.id WHERE joke.id = '$id'");        
+        $joke = Joke::find(1);
+        return View::make('joke.add', array('joke' => $joke));
     }
     
     public function insertJoke() {
         $title = Input::get('title');
         $text = Input::get('text');
         $categoriesSelected = Input::get('categories');
-        $categoriesAll = $this->getCategories();
         
         if (empty($categoriesSelected) || empty($text) || empty($title)) {
-            return View::make('joke.add', array('categories' => $categoriesAll, 'message' => "You should fill all inputs.", 'type' => "danger", "title" => $title, "text" => $text));
+            return View::make('joke.add', array('message' => "You should fill all inputs.", 'type' => "danger", "title" => $title, "text" => $text));
         }
         
-        $jokes = DB::select("SELECT * FROM joke");
+        $jokes = Joke::all();
         foreach ($jokes as $joke) { 
             similar_text(strtoupper($text), strtoupper($joke->text), $similarity_text);
             similar_text(strtoupper($title), strtoupper($joke->title), $similarity_title);
@@ -94,23 +98,22 @@ class JokeController extends BaseController {
                 $message = "<strong>The title you entered is too similar to title:</strong> $joke->title"; 
             }
             if(isset($message)) {
-                return View::make('joke.add', array('categories' => $categoriesAll, 'message' => $message, 'type' => "danger", "title" => $title, "text" => $text));
+                return View::make('joke.add', array('message' => $message, 'type' => "danger", "title" => $title, "text" => $text));
             }
         }
  
-        $text = DB::connection()->getPdo()->quote($text);
-        $title = DB::connection()->getPdo()->quote($title);
-        DB::insert("INSERT INTO joke (text, title) VALUES ($text, $title)");
-        $lastId = DB::getPdo()->lastInsertId();
-        
-        foreach ($categoriesSelected as $category) {
-            DB::insert("INSERT INTO jokecategory(joke_id, category_id) VALUES ($lastId, $category)");
-        }
-        return View::make('joke.add', array('categories' => $categoriesAll, 'message' => "successfull",  'type' => "success"));
+        $joke = new Joke();
+        $joke->title = $title;
+        $joke->text = $text;
+        $joke->save();
+              
+        $joke->categories()->attach($categoriesSelected);
+
+        return View::make('joke.add', array('message' => "successfull",  'type' => "success"));
     }
     
     private function isTitleDuplicit($title) {
-        $jokes = DB::select("SELECT * FROM joke");
+        $jokes = Joke::all();
         foreach ($jokes as $joke) { 
             similar_text(strtoupper($title), strtoupper($joke->title), $similarity_title);
             if (number_format($similarity_title, 0) > 90) {
@@ -121,7 +124,7 @@ class JokeController extends BaseController {
     }
     
     private function isTextDuplicit($text) {
-        $jokes = DB::select("SELECT * FROM joke");
+        $jokes = Joke::all();
         foreach ($jokes as $joke) { 
             similar_text(strtoupper($text), strtoupper($joke->text), $similarity_text);
             if (number_format($similarity_text, 0) > 70){ 
