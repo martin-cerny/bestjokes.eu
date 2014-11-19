@@ -9,5 +9,9 @@ class Category extends Eloquent {
     public function jokes() {
         return $this->belongsToMany('Joke', 'jokecategory');
     }
+    
+    public static function getAll() {
+        return DB::select("SELECT name, id, main FROM category ORDER BY name");
+    }
 
 }
