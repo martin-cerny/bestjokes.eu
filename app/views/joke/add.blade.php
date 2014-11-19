@@ -10,21 +10,19 @@
             <div class="alert alert-{{$type or ""}}" role="alert" style="margin-top: 20px">{{$message or ""}}</div>
             <div class="row">
                 <div class="col-lg-12"  style="margin-top: 20px">
-                    <?php $text = isset($text) ? $text : ""; ?>
-                    <?php $title = isset($title) ? $title : ""; ?>
-                    @if(isset($joke))
-                        {{ Form::model($joke, array('url' => array('edit'))) }}
+                    @if(isset($previous))
+                        {{ Form::model($joke, array('url' => "/updateJoke/" . $joke->id . "?previous=" . $previous)) }}
                     @else
                         {{ Form::model(new Joke(), array('url' => array('addJoke'))) }}
                     @endif
                     <div class="col-lg-7">
                         <div class="form-group">
                             {{ Form::label('title', 'Title', array('class' => 'col-lg-12')) }}
-                            {{ Form::text('title', $title, array('class' => 'col-lg-12 form-control', "required" => "true")) }}
+                            {{ Form::text('title', Input::old('title'), array('class' => 'col-lg-12 form-control', "required" => "true")) }}
                         </div>
                         <div class="form-group">
                             {{ Form::label('Text', 'Text', array('class' => 'col-lg-12')) }}
-                            {{ Form::textArea('text', $text, array('class' => 'col-lg-12 form-control', 'rows' => '25', 'style' => "white-space:pre", "required" => "true")) }}
+                            {{ Form::textArea('text', Input::old('text'), array('class' => 'col-lg-12 form-control', 'rows' => '25', 'style' => "white-space:pre", "required" => "true")) }}
                         </div>
                     </div>
                     <div class="col-lg-5 col-sm-12 col-xs-12">
@@ -34,7 +32,11 @@
                     <div class="col-lg-5 col-sm-12 col-xs-12">
                         @foreach (Category::all() as $category)
                         <div class="col-lg-4 col-sm-3 col-xs-4">
-                            {{ Form::checkbox('categories[]', $category->id) }}
+                            @if(isset($previous))
+                                {{ Form::checkbox('categories[]', $category->id, in_array($category->id, $joke->categories)) }}
+                            @else
+                                {{ Form::checkbox('categories[]', $category->id) }}
+                            @endif
                             {{ Form::label('categories', $category->name) }}
                         </div>
                         @endforeach
@@ -46,11 +48,9 @@
                 {{ Form::close() }}
             </div>
         </div>
-    </div>
-</body>
+    </body>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
-
 var checkTitle = function (data) {
     $.ajax({type: 'GET',
         url: '../checkTitleDuplicity',
