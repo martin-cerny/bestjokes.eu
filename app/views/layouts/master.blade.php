@@ -1,11 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>The best jokes from - bestjokes.eu</title>
+    <?php if(isset($type)) { ?>  
+        <title><?php echo $joke->title ?> - bestjokes.eu</title>
+    <?php } else { ?>
+        <title>The best<?php echo isset($categoryTitle) ? ' ' .$categoryTitle : ' '; ?>jokes from collection of {{ $totalItems or ''}} - bestjokes.eu</title>
+    <?php } ?>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="description" content="">
+    <?php if(isset($type)) { ?>  
+        <meta name="description" content="See joke - <?php echo substr($joke->text, 0, 120- strlen($joke->title))?>...">
+    <?php } else { ?>
+        <meta name="description" content="See the most popular<?php echo isset($categoryTitle) ? ' ' .$categoryTitle : ' '; ?>jokes according to user rating classified into 52 categories.">
+    <?php } ?>
     <meta name="author" content="Martin Černý">
     <link rel="icon" href="{{ 'favicon.ico' }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -91,5 +99,5 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 {{ HTML::script('js/main.js'); }}
-@include('partials.analytics')
+@include('partials.scripts')
 </html>
